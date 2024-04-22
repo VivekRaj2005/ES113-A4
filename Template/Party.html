@@ -17,7 +17,7 @@
       crossorigin="anonymous"
     />
     <style>
-      *{
+      * {
         font-family: "Poppins", sans-serif;
       }
       .details * {
@@ -43,7 +43,7 @@
       .details {
         margin: 10%;
       }
-/* 
+      /* 
       .form-group{
           display: flex;
           flex-direction: column;
@@ -59,30 +59,32 @@
           margin-top: 10px !important;
         }
 
-        .form-group{
+        .form-group {
           display: flex;
           flex-direction: column;
           align-items: center;
           padding: 5px;
         }
 
-        input, select{
+        input,
+        select {
           width: 100% !important;
         }
       }
 
-      .form-group input, .form-group select{
-          width: 50%;
-        }
+      .form-group input,
+      .form-group select {
+        width: 50%;
+      }
 
-        .form-group label{
-          text-align: right;
-        }
+      .form-group label {
+        text-align: right;
+      }
 
       .details * {
         text-align: center;
       }
-      .form-group{
+      .form-group {
         display: flex;
         justify-content: space-between;
         padding: 10px;
@@ -122,63 +124,39 @@
               <a class="nav-link" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/filter">Filter Data</a>
+              <a class="nav-link" href="/filter">Filter Data</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/company">Company</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/party">Party</a>
-            </li>
+                <a class="nav-link active" href="/party">Party</a>
+              </li>
           </ul>
         </div>
       </div>
     </nav>
     <div class="center">
       <form method="post" action="#">
-        <h5 style="width: 100%;text-align: center;padding: 10px;">Fill One/More Data point and Click Submit to Generate Report</h5>
+        <h5 style="width: 100%; text-align: center; padding: 10px">
+          Select a Party to generate Report
+        </h5>
         <div class="form-group">
-          <label for="exampleInputEmail1">Date of Encashment:</label>
-          <input
-            type="date"
-            class="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            name="date"
-          />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Bond No</label>
-          <input
-            type="text"
-            class="form-control"
-            id="exampleInputPassword1"
-            placeholder="Bond No"
-            name="bondno"
-          />
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Political Party:</label>
-          <select name="party" class="form-select" aria-label="Default select example">
-            <!-- <option selected>Open this select menu</option> -->
-            {% for x in parties %}
-            <option value="{{ x[0] }}">{{ x[0] }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="exampleInputPassword1">Company Name:</label>
-          <select name="Company" class="form-select" aria-label="Default select example">
+          <label for="exampleInputPassword1">Party Name:</label>
+          <select
+            name="Party"
+            class="form-select"
+            aria-label="Default select example"
+          >
             <!-- <option selected>Open this select menu</option> -->
             {% for x in names %}
             <option value="{{ x[0] }}">{{ x[0] }}</option>
             {% endfor %}
           </select>
         </div>
-        <div style="display: flex; justify-content: center; margin: 20px;">
+        <div style="display: flex; justify-content: center; margin: 20px">
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-        
       </form>
     </div>
     <script>

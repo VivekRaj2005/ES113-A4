@@ -1,5 +1,6 @@
 from  flask import Flask, render_template, send_from_directory, request
 from flask_mysqldb import MySQL
+import numpy as np
 import os
 
 if not os.path.exists("Server.py"):
@@ -20,6 +21,38 @@ def favicon():
 @app.route("/", methods=['GET', 'POST'])
 def Home():
     return render_template("Home.html")
+
+@app.route('/company', methods=['GET', "POST"])
+def Company():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT DISTINCT(name_of_purchaser) FROM eci2;")
+        name = cur.fetchall()
+        return render_template('CompanyData.html', names=name)
+    else:
+        company = request.form['Company']
+        cur = mysql.connection.cursor()
+        cur.execute('select max(purchase) from eci2;')
+        maxDate = cur.fetchone()[0]
+        cur.execute('select min(purchase) from eci2;')
+        mindate = cur.fetchone()[0]
+        maxY = int(maxDate.year) + 1
+        minY = int(mindate.year)
+        data = []
+        for x in range(minY, maxY + 1, 1):
+            query = f"SELECT count(*), sum(purchase) FROM eci2 where name_of_purchaser='{company}' and purchase between '{x}-01-01' and '{x}-12-31';"
+            cur.execute(query)
+            data.append(tuple([x]) + tuple((cur.fetchone())))
+        data1 = np.array(data)
+        ctx = list(data1.T[1])
+        ctc2 = data1.T[2]
+        ctc2[ctc2 == None] = 0
+        ctc = list(ctc2.astype(int))
+        print(data1.T)
+        return render_template('CompanyData Ans.html', years=list(range(minY, maxY + 1, 1)), data=data, ctx=ctx, ctc=ctc, name=company)
+
+
+        
 
 @app.route("/filter", methods=['GET', "POST"])
 def Filter():
@@ -63,6 +96,37 @@ def Filter():
             cur.execute(query)
             data = cur.fetchall()
             return render_template("Filter Ans.html", error=False, data=list(data))
+
+
+@app.route('/party', methods=['GET', "POST"])
+def party():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT DISTINCT(partu) FROM eci1;")
+        party = (cur.fetchall())
+        return render_template("Party.html", names=party)
+    else:
+        party = request.form['Party']
+        cur = mysql.connection.cursor()
+        cur.execute('select max(doe) from eci1;')
+        maxDate = cur.fetchone()[0]
+        cur.execute('select min(doe) from eci1;')
+        mindate = cur.fetchone()[0]
+        maxY = int(maxDate.year) + 1
+        minY = int(mindate.year)
+        data = []
+        for x in range(minY, maxY + 1, 1):
+            query = f"SELECT count(*), sum(purchase) from eci1 join eci2 using(bond) where partu='{party}' and doe between '{x}-01-01' and '{x}-12-31';"
+            cur.execute(query)
+            data.append(tuple([x]) + tuple((cur.fetchone())))
+        print(data)
+        data1 = np.array(data)
+        ctx = list(data1.T[1])
+        ctc2 = data1.T[2]
+        ctc2[ctc2 == None] = 0
+        ctc = list(ctc2.astype(np.int64))
+        print(data1.T)
+        return render_template('Party Ans.html', years=list(range(minY, maxY + 1, 1)), data=data, ctx=ctx, ctc=ctc, name=party)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -6,6 +6,7 @@
     <title>Bootstrap demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
@@ -15,6 +16,10 @@
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <style>
       * {
@@ -123,10 +128,10 @@
               <a class="nav-link" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/filter">Filter Data</a>
+              <a class="nav-link" href="/filter">Filter Data</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/company">Company</a>
+              <a class="nav-link active" href="/company">Company</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/party">Party</a>
@@ -135,15 +140,72 @@
         </div>
       </div>
     </nav>
+    <h4 style="margin-top: 20px;width: 100%;display: flex;justify-content: center;">Company Name: {{ name }}</h4>
+    <div
+      style="display: flex; justify-content: space-evenly; padding-top: 10px"
+    >
+      <div
+        style="
+          width: 500px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        "
+      >
+        <canvas id="bonds"></canvas>
+        <button
+          id="bondBTN"
+          style="
+            background-color: #fff;
+            border: none;
+            display: flex;
+            justify-content: center;
+          "
+        >
+          <span
+            class="material-symbols-outlined"
+            style="padding: 5px; margin-top: px"
+          >
+            download
+          </span>
+          <p style="margin-top: 5px">Download</p>
+        </button>
+      </div>
+      <div
+        style="
+          width: 500px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        "
+      >
+        <canvas id="cost"></canvas>
+        <button
+          id="costBTN"
+          style="
+            background-color: #fff;
+            border: none;
+            display: flex;
+            justify-content: center;
+          "
+        >
+          <span
+            class="material-symbols-outlined"
+            style="padding: 5px; margin-top: px"
+          >
+            download
+          </span>
+          <p style="margin-top: 5px">Download</p>
+        </button>
+      </div>
+    </div>
     <div class="center">
       <table class="table">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Referance No</th>
-            <th scope="col">Political Party</th>
-            <th scope="col">Company Name</th>
-            <th scope="col">Bond No</th>
-            <th scope="col">Status</th>
+            <th scope="col">Year</th>
+            <th scope="col">No of Bonds</th>
+            <th scope="col">Total Purchase (in Rs)</th>
           </tr>
         </thead>
         <tbody>
@@ -152,15 +214,27 @@
             <th>{{x[0]}}</th>
             <td>{{x[1]}}</td>
             <td>{{x[2]}}</td>
-            <td>{{x[3]}}</td>
-            <td>{{x[4]}}</td>
           </tr>
           {% endfor %}
-
         </tbody>
-        
       </table>
     </div>
+    <script>
+      function onClick(canvas) {
+        var link = document.createElement("a");
+        link.download = "download.png";
+        link.href = document.getElementById(canvas).toDataURL();
+        link.click();
+      }
+
+      document.getElementById("bondBTN").addEventListener("click", () => {
+        onClick("bonds");
+      });
+      document.getElementById("costBTN").addEventListener("click", () => {
+        onClick("cost");
+      });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       async function error() {
@@ -177,15 +251,14 @@
     <script>
       error();
     </script>
-    {% endif %}
-    {% if data == [] and not error %}
+    {% endif %} {% if data == [] and not error %}
     <script>
       Swal.fire({
-          icon: "warning",
-          title: "Warning",
-          text: "No Record Found",
-          footer: '<a href="/filter">Go Back</a>',
-        });
+        icon: "warning",
+        title: "Warning",
+        text: "No Record Found",
+        footer: '<a href="/filter">Go Back</a>',
+      });
     </script>
     {% endif %}
     <script>
@@ -202,5 +275,85 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script>
+      var backgroundColor = [
+        "rgba(255, 99, 132, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(255, 206, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+      ];
+      var borderColor = [
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 159, 64, 1)",
+      ];
+      var gen_len= {{ data | length }}
+      var bgFinal = []
+      var borderFinal = []
+      for (let index = 0; index < gen_len; index++) {
+        bgFinal.push(backgroundColor[index % 6]);
+        borderFinal.push(borderColor[index % 6]);
+      }
+
+      var ctx = document.getElementById("bonds");
+      var ctc = document.getElementById("cost");
+      var myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: {{ years }},
+          datasets: [
+            {
+              label: "# of Bonds",
+              data: {{ ctx }},
+              backgroundColor: bgFinal,
+              borderColor: borderFinal,
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        },
+      });
+      var myChart = new Chart(ctc, {
+        type: "bar",
+        data: {
+          labels: {{ years }},
+          datasets: [
+            {
+              label: "Cost (Rs)",
+              data: {{ ctc }},
+              backgroundColor: bgFinal,
+              borderColor: borderFinal,
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                },
+              },
+            ],
+          },
+        },
+      });
+    </script>
   </body>
 </html>
