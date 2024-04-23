@@ -28,8 +28,28 @@ The Drop Downs are populated by flask. Hence no validaton is present as user can
 ![E2](Assets/e2a.png "Title")
 
 ## E3 
-![E2](Assets/e3q.png "Title")
+![E3](Assets/e3q.png "Title")
 The Drop Downs are populated by flask. Hence no validaton is present as user cannot do any invalid commands.
+
+### E3 Output
+![E3](Assets/e3a.png "Title")
+
+## E4
+![E4](Assets/e4q.png "Title")
+The Drop Downs are populated by flask. Hence no validaton is present as user cannot do any invalid commands.
+
+### E4 Output
+![E4](Assets/e4a.png "Title")
+
+## E5
+![E5](Assets/e5b.png "Title")
+The Drop Downs are populated by flask. Hence no validaton is present as user cannot do any invalid commands.
+
+### E5 Output
+![E5](Assets/e5a.png "Title")
+
+## E6 (Download)
+![Download](Assets/Download "Title")
 
 ## EXTRA FEATURE (FORM VALIDATION USING SWAL)
 ### Blank Form
