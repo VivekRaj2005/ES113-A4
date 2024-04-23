@@ -10,6 +10,7 @@ app = Flask(__name__, template_folder='../Template', static_folder='../Static')
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = "kannan"
 app.config["MYSQL_DB"] = "es113"
+# app.jinja_options["autoescape"] = lambda _: False
 mysql = MySQL(app)
 
 
@@ -40,7 +41,7 @@ def Company():
         minY = int(mindate.year)
         data = []
         for x in range(minY, maxY + 1, 1):
-            query = f"SELECT count(*), sum(purchase) FROM eci2 where name_of_purchaser='{company}' and purchase between '{x}-01-01' and '{x}-12-31';"
+            query = f"SELECT count(*), sum(denom) FROM eci2 where name_of_purchaser='{company}' and purchase between '{x}-01-01' and '{x}-12-31';"
             cur.execute(query)
             data.append(tuple([x]) + tuple((cur.fetchone())))
         data1 = np.array(data)
@@ -116,7 +117,7 @@ def party():
         minY = int(mindate.year)
         data = []
         for x in range(minY, maxY + 1, 1):
-            query = f"SELECT count(*), sum(purchase) from eci1 join eci2 using(bond) where partu='{party}' and doe between '{x}-01-01' and '{x}-12-31';"
+            query = f"SELECT count(*), sum(denom) from eci1 join eci2 using(bond) where partu='{party}' and doe between '{x}-01-01' and '{x}-12-31';"
             cur.execute(query)
             data.append(tuple([x]) + tuple((cur.fetchone())))
         print(data)
@@ -127,6 +128,52 @@ def party():
         ctc = list(ctc2.astype(np.int64))
         print(data1.T)
         return render_template('Party Ans.html', years=list(range(minY, maxY + 1, 1)), data=data, ctx=ctx, ctc=ctc, name=party)
+
+@app.route('/company_party', methods=['GET', 'POST'])
+def CompParty():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT DISTINCT(partu) FROM eci1;")
+        party = (cur.fetchall())
+        return render_template("CoPa.html", names=party)
+    else:
+        party = request.form['Party']
+        query = f"SELECT name_of_purchaser, sum(denom) from eci1 join eci2 using(bond) where partu='{party}' Group by name_of_purchaser"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        data1 = np.array(data)
+        ctx = list(data1.T[0].astype(str))
+        ctc2 = data1.T[1]
+        ctc2[ctc2 == None] = 0
+        ctx_ = []
+        for x in ctx:
+            ctx_.append(str(x))
+        ctc = list(ctc2.astype(np.int64))
+        return render_template("CoPa Ans.html", company=ctx_, ctx=ctc, data=data, name=party)
+    
+@app.route('/party_company', methods=['GET', 'POST'])
+def PartyComp():
+    if request.method == "GET":
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT DISTINCT(name_of_purchaser) FROM eci2;")
+        party = (cur.fetchall())
+        return render_template("PaCo.html", names=party)
+    else:
+        party = request.form['Company']
+        query = f"SELECT partu, sum(denom) from eci1 join eci2 using(bond) where name_of_purchaser='{party}' Group by partu"
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+        data1 = np.array(data)
+        ctx = list(data1.T[0].astype(str))
+        ctc2 = data1.T[1]
+        ctc2[ctc2 == None] = 0
+        ctx_ = []
+        for x in ctx:
+            ctx_.append(str(x))
+        ctc = list(ctc2.astype(np.int64))
+        return render_template("PaCo Ans.html", company=ctx_, ctx=ctc, data=data, name=party)
 
 if __name__ == "__main__":
     app.run(debug=True)

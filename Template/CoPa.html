@@ -24,11 +24,12 @@
         text-align: left;
       }
       .center {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        /* width: 80%; */
-        padding: 40px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        width: 50%;
       }
 
       body {
@@ -123,77 +124,47 @@
               <a class="nav-link" aria-current="page" href="/">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/filter">Filter Data</a>
+              <a class="nav-link" href="/filter">Filter Data</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/company">Company</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/party">Party</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/company_party">Company -> Party</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/party_company">Party -> Company</a>
-            </li>
+                <a class="nav-link" href="/party">Party</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="/company_party">Company -> Party</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/party_company">Party -> Company</a>
+              </li>
           </ul>
         </div>
       </div>
     </nav>
     <div class="center">
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">Referance No</th>
-            <th scope="col">Political Party</th>
-            <th scope="col">Company Name</th>
-            <th scope="col">Bond No</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for x in data %}
-          <tr>
-            <th>{{x[0]}}</th>
-            <td>{{x[1]}}</td>
-            <td>{{x[2]}}</td>
-            <td>{{x[3]}}</td>
-            <td>{{x[4]}}</td>
-          </tr>
-          {% endfor %}
-
-        </tbody>
-        
-      </table>
+      <form method="post" action="#">
+        <h5 style="width: 100%; text-align: center; padding: 10px">
+          Select a Party to generate Report
+        </h5>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Party Name:</label>
+          <select
+            name="Party"
+            class="form-select"
+            aria-label="Default select example"
+          >
+            <!-- <option selected>Open this select menu</option> -->
+            {% for x in names %}
+            <option value="{{ x[0] }}">{{ x[0] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="display: flex; justify-content: center; margin: 20px">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      async function error() {
-        await Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "No Data was passed in the form",
-          footer: '<a href="/filter">Go Back  </a>',
-        });
-        window.location.href = "/filter";
-      }
-    </script>
-    {% if error %}
-    <script>
-      error();
-    </script>
-    {% endif %}
-    {% if data == [] and not error %}
-    <script>
-      Swal.fire({
-          icon: "warning",
-          title: "Warning",
-          text: "No Record Found",
-          footer: '<a href="/filter">Go Back</a>',
-        });
-    </script>
-    {% endif %}
     <script>
       fetch("https://www.google.com", { mode: "no-cors" })
         .then(() => {})
