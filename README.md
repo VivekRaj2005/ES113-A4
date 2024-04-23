@@ -49,13 +49,24 @@ The Drop Downs are populated by flask. Hence no validaton is present as user can
 ![E5](Assets/e5a.png "Title")
 
 ## E6 (Download)
-![Download](Assets/Download "Title")
+![Download](Assets/download.png "Title")
 
 ## EXTRA FEATURE (FORM VALIDATION USING SWAL)
 ### Blank Form
-![E1](Assets/e1e1.png "Title")
+![Extra 1](Assets/e1e1.png "Title")
 
 ### Not Valid Parameter(s)
-![E1](Assets/e1e2.png "Title")
+![Extra 2](Assets/e1e2.png "Title")
+
+## Favicon
+![Extra 3](Assets/Favicon.png "Title")
+
+## Langing Page
+![Extra 4](Assets/landing.png "Title")
+
+## Fully Functioning Navbar
+
+![Extra 5](Assets/navbar.png "Title")
+
 
 
